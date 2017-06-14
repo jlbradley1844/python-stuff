@@ -49,13 +49,16 @@ def instant_runoff(scrubbed_ballots, candidate_set):
     """
     top_picks = [ballot[0] for ballot in scrubbed_ballots]
     ballot_counts = {}
-    for candidate in candidate_array:
-        ballot_counts[candidate] in top_picks.count(candidate)
+    for candidate in candidate_set:
+        ballot_counts[candidate] = top_picks.count(candidate)
         
     num_ballots = len(top_picks)
     for candidate in top_picks:
-        if ballot_counts[candidate] >= round(num_ballots / 2):
+        if ballot_counts[candidate] > round(num_ballots / 2):
             return candidate     # we have a winner!!
+        elif (ballot_counts[candidate] == round(num_ballots / 2) and
+              len(candidate_set) == 2):
+              return candidate    # tie, just pick one
 
     # if reached here, we need to toss out the lowest candidate
     loser = min(ballot_counts, key=ballot_counts.get)
