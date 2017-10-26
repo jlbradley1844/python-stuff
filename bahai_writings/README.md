@@ -310,11 +310,21 @@ above works in this case as well.
 ### Saving Your State
 Once you preprocess your document, you can save it out to disk and
 fetch it later:
-Doc.to_disk()
-Doc.from_disk()
+   nlp.save_to_directory('path/to/your/new/model_obj')
+to save it, and
+  pip install /path/to/your/new/model_obj.tar.gz  # one-time command
+  import model_obj
+  nlp = model_obj.load()
+whenever you want to load it.
 
 Something like this would be useful for an IPython-type setup within
-which one could work with individual documents or document collections.
+which one could work with document collections. Essentially, this
+would allow saving the entire corpus of searchable work; documents
+could later be added one-at-a-time as available, and the model saved
+again.
+
+NOTE: this would not save any metadata I would want to create; are
+there other ways to suppliment this, e.g. pickle?
 
 ### Pulling from document one sentence at a time
 Doc.sents - returns an iterator over the sentences in the
@@ -339,16 +349,34 @@ If it is a text paragraph:
 -> search for the entry
 If entry is found:
 -> "highlight" the entry in the paragraph (there may be multiple) and
-containing sentence (maybe)
+containing sentence
 -> pop the document name and paragraph, then push the <document,
 paragraph_no, formatted_text> tuple to the "found" collection
 
 This routine would return a collection that could then be formatted a
 number of different ways.
 
-N.B. I don't understand the search yet... need to figure how to
-integrate the callback, or whateveritis.
+The search returns a 'span', which is itself a python span over a
+collection of tokens. The span.sent() method will extract the entire sentence.
+*Idea* - iterate over collection of sentences to create a set of
+unique hashes; then, use sentence match to find the cross-reference
+within the hashes. That will allow printing the paragraph and the
+reference. Rather than rely on unique dictionary - see if I can use a
+dict based on large substring.
 
 ### Entity-matching
 
 
+The document analysis is going to produce a number of entities. Visual
+inspection of these entities will be necessary, but it is likely that
+the same core concepts will occur frequently. As such, it will be
+necessary to use entity analysis to create a sort of thesaurus of
+commonly-used terms.
+
+There is no obvious mechanism for doing this automatically; while nltk
+offers some sort of network model, scipy does not, and in any case, it
+does not seem likely that one will work.
+
+This can be developed examining doc.ents, which contains the
+entities. Note that each token contains a member ent_type which gives
+the type of entity.
