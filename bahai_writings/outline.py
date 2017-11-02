@@ -67,13 +67,13 @@ def consolidate_paragraphs(paragraph_offsets, header_offsets):
     paragraph following it
     """
     # pragmatically, both of these offsets will start at 0
-    cleaned_para_list = [ paragraph_offsets[0] ]
+    cleaned_para_list = [0]
     prior_para_marker = 0
     header_ptr = 0
     
-    for para_marker in pagragraph_offsets:
-        if (header_offsets[header_ptr][0] > prior_para_marker and
-            header_offsets[header_ptr][1] < para_marker[0]):
+    for para_marker in paragraph_offsets:
+        if (header_offsets[header_ptr][0] >= prior_para_marker and
+            header_offsets[header_ptr][1] <= para_marker[1]):
             # header is "merged" into this paragraph, so don't
             # add the next paragraph marker, just mvoe along
             header_ptr = header_ptr + 1

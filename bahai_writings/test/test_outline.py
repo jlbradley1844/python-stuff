@@ -36,3 +36,16 @@ def test_paragraphdetect():
                    (5696, 5700),  (5986, 5998),  (6046, 6052),  (6472, 6476),
                    (7635, 7639),  (8033, 8037),  (8365, 8369),  (8835, 8839),
                    (9504, 9516),  (9566, 9572)]
+
+    
+def test_paraindex():
+    with open('texts/gleanings.txt', 'r') as myfile:
+        text=myfile.read()
+    utext=unicode(text.decode('utf8'))
+
+    hspans = outline.get_headers(utext[:10000])
+    hout = outline.consolidate_headers(hspans)
+    pspans = outline.get_paragraph_markers(utext[:10000])
+    pout = outline.consolidate_paragraphs(pspans, hspans)
+    assert pout == [0, 356, 1100, 1836, 2328, 2751, 3051, 3365, 3924, 4938, 5696, 5986,
+                   6472, 7635, 8033, 8365, 8835, 9504]
