@@ -49,3 +49,48 @@ def test_paraindex():
     pout = outline.consolidate_paragraphs(pspans, hspans)
     assert pout == [0, 356, 1100, 1836, 2328, 2751, 3051, 3365, 3924, 4938, 5696, 5986,
                    6472, 7635, 8033, 8365, 8835, 9504]
+
+
+def test_lookup():
+    arr = [0, 356, 1100, 1836, 2328, 2751, 3051, 3365, 3924, 4938, 5696, 5986,
+                   6472, 7635, 8033, 8365, 8835, 9504]
+    assert len(arr) == 18
+    
+    assert outline.binary_lookup(0, arr) == 0
+    assert outline.binary_lookup(4000, arr) == 8
+    assert outline.binary_lookup(1000000, arr) == 17
+    assert outline.binary_lookup(3365, arr) == 7
+
+
+def test_indexer():
+    with open('texts/gleanings.txt', 'r') as myfile:
+        text=myfile.read()
+    utext=unicode(text.decode('utf8'))
+
+    doc = outline.DocumentIndex(utext)
+    assert doc.lookup(100) == {
+        "section": "I: LAUDED AND GLORIFIED ART THOU, O LORD, MY...",
+        "paragraph": 1,
+        "section_seq": 1
+        }
+    assert doc.lookup(1000) == {
+        "section": "I: LAUDED AND GLORIFIED ART THOU, O LORD, MY...",
+        "paragraph": 2,
+        "section_seq": 1
+        }
+    assert doc.lookup(10000) == {
+        "section": "VI: BEHOLD, HOW THE DIVERS PEOPLES AND KINDREDS...",
+        "paragraph": 18,
+        "section_seq": 6
+        }
+    assert doc.lookup(100000) == {
+        "section": "XXIX: THE PURPOSE OF GOD IN CREATING MAN HATH...",
+        "paragraph": 129,
+        "section_seq": 29
+        }
+    # overflow - point to terminal datum??
+    assert doc.lookup(500000) == {
+        "section": "CLXVI: WHOSO LAYETH CLAIM TO A REVELATION DIRECT...",
+        "paragraph": 718,
+        "section_seq": 166
+        }

@@ -72,15 +72,70 @@ def consolidate_paragraphs(paragraph_offsets, header_offsets):
     header_ptr = 0
     
     for para_marker in paragraph_offsets:
-        if (header_offsets[header_ptr][0] >= prior_para_marker and
-            header_offsets[header_ptr][1] <= para_marker[1]):
-            # header is "merged" into this paragraph, so don't
-            # add the next paragraph marker, just mvoe along
-            header_ptr = header_ptr + 1
-        else:
-            # header isn't up yet, so this paragraph marker is valid
+        if header_ptr >= len(header_offsets):
+            # no more headers. All remaining paragraphs under last heading
             cleaned_para_list.append(para_marker[0])
+        else:
+            if (header_offsets[header_ptr][0] >= prior_para_marker and
+                header_offsets[header_ptr][1] <= para_marker[1]):
+                # header is "merged" into this paragraph, so don't
+                # add the next paragraph marker, just mvoe along
+                header_ptr = header_ptr + 1
+            else:
+                # header isn't up yet, so this paragraph marker is valid
+                cleaned_para_list.append(para_marker[0])
         prior_para_marker = para_marker[0]
 
     return cleaned_para_list
         
+
+def binary_lookup(index, offsets):
+    """
+    Given a character index, look up the index of it in the offsets. This will
+    be the number at which the next index is greater
+    """
+    bottom = 0
+    top = len(offsets) - 1
+    if index > offsets[top]:
+        return top
+    
+    while top - bottom > 1:
+        mid = (top + bottom) / 2
+        if index >= offsets[mid]:
+            bottom = mid
+        else:
+            top = mid
+
+    return bottom
+
+
+class DocumentIndex:
+    """
+    This class is initialized by a document. It takes a unicode string as a
+    document and initializes the header and paragraph marker locations. It then
+    provides a get_index which will return information about paragraph markers
+    and header sections for a given offset
+    """
+
+    header_offsets = []
+    header_values = []
+    paragraph_offsets = []
+
+    def __init__(self, docstring):
+        raw_header_offsets = get_headers(docstring)
+        self.header_offsets = consolidate_headers(raw_header_offsets)
+
+        raw_paragraph_offsets = get_paragraph_markers(docstring)
+        self.paragraph_offsets = consolidate_paragraphs(raw_paragraph_offsets, raw_header_offsets)
+
+        for hdr_span in raw_header_offsets:
+            self.header_values.append(docstring[hdr_span[0]:hdr_span[1]].strip())   # lop off EOL
+
+    def lookup(self, offset):
+        section_index = binary_lookup(offset, self.header_offsets)
+        paragraph_index = binary_lookup(offset, self.paragraph_offsets)
+        return {
+            "section": self.header_values[section_index],
+            "paragraph": paragraph_index + 1,
+            "section_seq": section_index + 1
+            }
