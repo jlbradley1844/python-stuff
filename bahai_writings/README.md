@@ -20,6 +20,24 @@ import spacy
 nlp = spacy.load('en')
 doc = nlp(textInputObject)
 
+===============================
+
+# CONFIGURING DOCUMENTS
+
+To add a document to the collection, you must do the following:
+
+1. Download into UTF-8 format. NO OTHER ENCODINGS WILL BE PROCESSED PROPERLY.
+Note that extended ASCII will NOT work; proper diacritical use is important
+for matching, and researchers will not find this tool useful if they
+are having to always fix diacriticals of code sections they pasted into
+their own work. Existing documents have been downloaded from Gutenberg.
+
+2. Save document into ONE FILE and place into the texts/ directory in the
+installation.
+
+3. Edit the doc_metadata.py file to add an entry to the structure.
+Read the comment block at the top for detailed directions on how to do so.
+
 =============================
 
 # CHALLENGES IN NATURAL LANGUAGE PROCESSING FOR THE BAHA'I WRITINGS

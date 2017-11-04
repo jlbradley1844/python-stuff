@@ -11,8 +11,6 @@ are recognized as two or more line feeds.
 """
 import re
 
-import pdb
-
 def sectioner(doc_string, regex):
     """
     Find all regex-identifiable elements in a document
