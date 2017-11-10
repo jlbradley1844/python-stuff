@@ -1,3 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os, sys
+
 """
 This is a JSON-style index of the documents. All documents are held in the
 text/ directory. If you add a document, you must add an entry in this
@@ -20,28 +24,28 @@ remainder tbd
 
 """
 DOCUMENT_INDEX = {
-    "GWB": {
-        "file": "gleanings.txt",
-        "full_name": "Gleanings from the Writings of Bah·ull·h",
-        "pub_info": ("http://www.gutenberg.org/wiki/Bah·%27Ì_Faith_(Bookshelf),"
-                     " downloaded October 10, 2017")
-    },
     "SVFV": {
         "file": "seven-valleys-four-valleys.txt",
         "full_name": "Seven Valleys and the Four Valleys",
-        "pub_info": ("http://www.gutenberg.org/wiki/Bah·%27Ì_Faith_(Bookshelf),"
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
                      " downloaded October 26, 2017")
     },
     "KI": {
         "file": "kitab-i-iqan.txt",
-        "full_name": "Kit·b-i-Õq·n",
-        "pub_info": ("http://www.gutenberg.org/wiki/Bah·%27Ì_Faith_(Bookshelf),"
+        "full_name": "The Kit√°b-i-√çq√°n",
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
                      " downloaded October 26, 2017")
     },
     "PM": {
         "file": "prayers-and-meditations.txt",
         "full_name": "Prayers and Meditatons",
-        "pub_info": ("http://www.gutenberg.org/wiki/Bah·%27Ì_Faith_(Bookshelf),"
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
                      " downloaded October 26, 2017")
+    },
+    "GWB": {
+        "file": "gleanings.txt",
+        "full_name": "Gleanings from the Writings of Bah√°‚Äôu‚Äôll√°h",
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
+                     " downloaded October 10, 2017")
     }
 }

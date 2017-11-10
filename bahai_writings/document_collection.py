@@ -27,9 +27,10 @@ class DocumentCollection:
         """
         self.nlp = spacy.load('en')    # use English
 
-        for doc_obj in doc_metadata.DOCUMENT_INDEX:            
+        for doc_obj in DOCUMENT_INDEX:            
             # read in the text file you wish to analyze
-            with open(DocumentCollection.DOC_FOLDER + doc_obj.file, 'r') as next_file:
+            with open(DocumentCollection.DOC_FOLDER +
+                      DOCUMENT_INDEX[doc_obj]["file"], 'r') as next_file:
                 text = next_file.read()
                 utext = unicode(text.decode('utf8'))   # important!!
 
@@ -37,26 +38,46 @@ class DocumentCollection:
                 doc_index = outline.DocumentIndex(utext)
 
                 # tokenize and process the document into spacy document
-                doc = nlp.tokenizer(utext)
-                nlp.tagger(doc)
-                nlp.parser(doc)
-                nlp.entity(doc)
+                doc = self.nlp.tokenizer(utext)
+                self.nlp.tagger(doc)
+                self.nlp.parser(doc)
+                self.nlp.entity(doc)
 
-                doc_obj["index"] = doc_index
-                doc_obj["nlpdoc"] = doc
+                DOCUMENT_INDEX[doc_obj]["index"] = doc_index
+                DOCUMENT_INDEX[doc_obj]["nlpdoc"] = doc
+
+
+    def extract_doc(self, doc_index):
+        """
+        given the document tag, extract the document and all the metadata
+        :param doc_index - document abbreviation
+        """
+        return DOCUMENT_INDEX[doc_index]
+
 
                 
-    def simple_search(self, test_str):
+    def simple_search(self, match, doc=None):
         """
         Demonstration routine. This performs a spacy entity search throughout the
         corpus and returns the accumulation of matches, involving
         - quotation in context
         - document metadata
-        This matches a single token, and ignores case
+        @param matcher - may be a string or JSON-style dictionary. If a string, it will
+        match a single token, and ignores case
+        @param doc - if None, matches all documents. If supplied, must be mnemonic of
+        the document being search. If array, will be the list of the documents.
+        :returns - matcher output. This returns a 4-tuple array of elements consisting
+        of (matchid, ?, start, end)
         """
-        simple_matcher = Matcher(nlp.vocab)
-        matcher.add_pattern("test", [{LOWER: "hello"}])
-        for doc_obj in doc_metadata.DOCUMENT_INDEX:
-            matches = matcher(doc_obj["nlpdoc"])
+        simple_matcher = spacy.matcher.Matcher(self.nlp.vocab)
+        if type(match) == str:
+            pattern = [{'LOWER': match}]
+        else:
+            pattern = match
+        simple_matcher.add_pattern("test", pattern)
+        matches = {}
+        for doc_obj in DOCUMENT_INDEX:
+            matches[doc_obj] = simple_matcher(DOCUMENT_INDEX[doc_obj]["nlpdoc"])
 
+        return matches
             
