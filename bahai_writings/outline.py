@@ -130,6 +130,15 @@ class DocumentIndex:
             self.header_values.append(docstring[hdr_span[0]:hdr_span[1]].strip())   # lop off EOL
 
     def lookup(self, offset):
+        """
+        returns information on the location at which a location is
+        :param offset - integer offset of a token about which we want the location
+        information.
+        :returns a dictionary with three fields
+        "section" - reference to the current section header (a string)
+        "paragraph" - reference to numbered paragraph in which offset is present
+        "section_seq" - reference to numbered section in which offset is present
+        """
         section_index = binary_lookup(offset, self.header_offsets)
         paragraph_index = binary_lookup(offset, self.paragraph_offsets)
         return {
@@ -137,3 +146,45 @@ class DocumentIndex:
             "paragraph": paragraph_index + 1,
             "section_seq": section_index + 1
             }
+
+
+    def get_paragraph_span(self, para_num):
+        """
+        returns the token offsets associated with a given paragraph
+        in a (begin,end) tuple. if this is the last paragraph, None is
+        returned for end, indicating that we will take the span through the end.
+        """
+        begin = self.paragraph_offsets[para_num - 1]
+        end = None
+        if para_num < len(self.paragraph_offsets):
+            end = self.paragraph_offsets[para_num]
+
+        return (begin, end)
+
+
+    def get_number_of_paragraphs(self):
+        """
+        returns the number of paragraphs in document
+        """
+        return len(self.paragraph_offsets)
+
+    
+    def get_section_span(self, section_seq):
+        """
+        return the token offsets associated with a given section in
+        a begin, end tuple. If this is the last section, None is returned
+        for end, indicating one should take the span through the end.
+        """
+        begin = self.header_offsets[section_seq - 1]
+        end = None
+        if section_seq < len(self.header_offsets):
+            end = self.header_offsets[section_seq]
+
+        return (begin, end)
+
+
+    def get_number_of_sections(self):
+        """
+        returns the number of sections in document
+        """
+        return len(self.header_offsets)

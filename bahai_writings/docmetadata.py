@@ -21,28 +21,42 @@ file: file name. All files must be in text
 full_name: Full title of document
 remainder tbd
 
-
 """
+
+CATEGORIES = [
+    "Baha'u'llah",
+    "Abdul-Baha",
+    "Shoghi_Effendi",
+    "UHJ",
+    "Bible",
+    "Koran"
+    ]
+
+    
 DOCUMENT_INDEX = {
     "SVFV": {
+        "category": "Baha'u'llah",
         "file": "seven-valleys-four-valleys.txt",
         "full_name": "Seven Valleys and the Four Valleys",
         "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
                      " downloaded October 26, 2017")
     },
     "KI": {
+        "category": "Baha'u'llah",
         "file": "kitab-i-iqan.txt",
         "full_name": "The Kitáb-i-Íqán",
         "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
                      " downloaded October 26, 2017")
     },
     "PM": {
+        "category": "Baha'u'llah",
         "file": "prayers-and-meditations.txt",
         "full_name": "Prayers and Meditatons",
         "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
                      " downloaded October 26, 2017")
     },
     "GWB": {
+        "category": "Baha'u'llah",
         "file": "gleanings.txt",
         "full_name": "Gleanings from the Writings of Bahá’u’lláh",
         "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",

@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from document_collection import DocumentCollection
+from documentcollection import DocumentCollection
 import pytest
 
 import pdb

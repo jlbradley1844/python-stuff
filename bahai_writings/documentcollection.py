@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import spacy
 
-from doc_metadata import DOCUMENT_INDEX
+from docmetadata import DOCUMENT_INDEX
 import outline
 
 import pdb
@@ -47,37 +47,40 @@ class DocumentCollection:
                 DOCUMENT_INDEX[doc_obj]["nlpdoc"] = doc
 
 
-    def extract_doc(self, doc_index):
+    def extract_doc(self, doc_tag):
         """
         given the document tag, extract the document and all the metadata
         :param doc_index - document abbreviation
         """
-        return DOCUMENT_INDEX[doc_index]
+        return DOCUMENT_INDEX[doc_tag]
 
 
-                
-    def simple_search(self, match, doc=None):
+    def simple_search(self, match, doc_list=None):
         """
         Demonstration routine. This performs a spacy entity search throughout the
         corpus and returns the accumulation of matches, involving
         - quotation in context
         - document metadata
-        @param matcher - may be a string or JSON-style dictionary. If a string, it will
-        match a single token, and ignores case
-        @param doc - if None, matches all documents. If supplied, must be mnemonic of
-        the document being search. If array, will be the list of the documents.
-        :returns - matcher output. This returns a 4-tuple array of elements consisting
+        @param matcher - may be a string or JSON-style dictionary containing a spacy
+        matcher specification. If a string, it will
+        match a single token, ignoring token case
+        @param doc_list - if None, matches all documents. If supplied, must be mnemonic of
+        the document being search. If array, will be the list of the document tags.
+        :returns - matcher output. This returns a dictionary; the key is the document
+        tag, and the value is an array of 4-tuple of elements consisting
         of (matchid, ?, start, end)
         """
+        if doc_list is None:
+            doc_list = DOCUMENT_INDEX.keys()
+        
         simple_matcher = spacy.matcher.Matcher(self.nlp.vocab)
         if type(match) == str:
             pattern = [{'LOWER': match}]
         else:
             pattern = match
-        simple_matcher.add_pattern("test", pattern)
+        simple_matcher.add_pattern("test", pattern.lower())
         matches = {}
-        for doc_obj in DOCUMENT_INDEX:
-            matches[doc_obj] = simple_matcher(DOCUMENT_INDEX[doc_obj]["nlpdoc"])
+        for doc_tag in doc_list:
+            matches[doc_tag] = simple_matcher(DOCUMENT_INDEX[doc_tag]["nlpdoc"])
 
         return matches
-            
