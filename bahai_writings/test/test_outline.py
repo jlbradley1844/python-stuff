@@ -94,3 +94,34 @@ def test_indexer():
         "paragraph": 718,
         "section_seq": 166
         }
+
+
+def test_simple_getters():
+    with open('texts/gleanings.txt', 'r') as myfile:
+        text=myfile.read()
+    utext=unicode(text.decode('utf8'))
+    doc = outline.DocumentIndex(utext)
+
+    assert doc.get_number_of_paragraphs() == 718
+    assert doc.get_number_of_sections() == 166
+
+
+def test_para_getter():
+    with open('texts/gleanings.txt', 'r') as myfile:
+        text=myfile.read()
+    utext=unicode(text.decode('utf8'))
+    doc = outline.DocumentIndex(utext)
+
+    span = doc.get_paragraph_span(2)
+    assert span == (356, 1100)
+
+
+def test_sect_getter():
+    with open('texts/gleanings.txt', 'r') as myfile:
+        text=myfile.read()
+    utext=unicode(text.decode('utf8'))
+    doc = outline.DocumentIndex(utext)
+
+    span = doc.get_section_span(4)
+    assert span == (4948, 5996)
+

@@ -75,10 +75,10 @@ class DocumentCollection:
         
         simple_matcher = spacy.matcher.Matcher(self.nlp.vocab)
         if type(match) == str:
-            pattern = [{'LOWER': match}]
+            pattern = [{'LOWER': match.lower()}]
         else:
             pattern = match
-        simple_matcher.add_pattern("test", pattern.lower())
+        simple_matcher.add_pattern("test", pattern)
         matches = {}
         for doc_tag in doc_list:
             matches[doc_tag] = simple_matcher(DOCUMENT_INDEX[doc_tag]["nlpdoc"])
