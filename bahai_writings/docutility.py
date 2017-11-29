@@ -45,7 +45,7 @@ class DocUtility(object):
         :param token_ref - numerical offset of token in document
         :returns the sentence of text cotaining the token_ref at the offset
         """
-        return self.doc[token_ref[0]:token_ref[1]].sent
+        return str(self.doc[token_ref[0]:token_ref[1]].sent)
 
 
     def _get_paragraph_range(self, start_para, end_para = None):
@@ -206,3 +206,10 @@ x>        """
             return (text, DocUtility.DOCUMENT)
         else:
             return self.get_next_scoped_selection(token_ref, next_scope[scope], True)
+
+
+    def clean_whitespace(self, str):
+        """utility to remove line feeds"""
+        # common python idiom - split splits on ANY whitespace, and join joins
+        # using it
+        return " ".join(str.split())

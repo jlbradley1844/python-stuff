@@ -88,7 +88,7 @@ class DocumentEngine:
                 found_ref["tag"] = doc_tag
                 begin = raw_results[ref][2]
                 end = raw_results[ref][3]
-                found_ref["selection"] = doc[begin:end].sent
+                found_ref["selection"] = str(doc[begin:end].sent)
                 found_ref["scope"] = SCOPE.SENTENCE
                 lookup_info = index.lookup(begin)
                 found_ref["section"] = lookup_info["section"]

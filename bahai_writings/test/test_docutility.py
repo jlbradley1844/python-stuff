@@ -11,13 +11,15 @@ def test_doc_extract():
     """
     This performs collapse/expand options on one of the shorter documents
     """
-    pdb.set_trace()
     LOCAL_COLLECTION = {}
     LOCAL_COLLECTION["SVFV"] = DOCUMENT_INDEX["SVFV"]    
     obj_test = DocumentCollection(LOCAL_COLLECTION)
-    doc = obj_test.extract_doc("SVFV")
-    index = DocumentIndex(str(doc))
+    doc_obj = obj_test.extract_doc("SVFV")
+    doc = doc_obj["nlpdoc"]
+    index = doc_obj["index"]
 
     doc_utility = DocUtility(doc, index)
-    sentence = doc_utility.get_scoped_selection((30,33), DocUtility.SENTENCE)
-    assert sentence == "now is the time for all good men to come to the aid of their party"
+    raw_sentence = doc_utility.get_scoped_selection((1230,1233), DocUtility.SENTENCE)
+    sentence = doc_utility.clean_whitespace(raw_sentence)
+    assert sentence == ("At every step, aid from the Invisible Realm will "
+                        "attend him and the heat of his search will grow.")
