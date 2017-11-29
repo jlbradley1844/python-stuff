@@ -1,11 +1,20 @@
 #!/usr/bin/python
 from documentcollection import DocumentCollection
+from docmetadata import DOCUMENT_INDEX
 import pytest
 
 import pdb
 
 def test_matching():
-    obj_test = DocumentCollection()
+    """
+    This performs some simple tess on a subset document collection. It
+    takes one small document and one larger one: Seven Valleys and Gleanings
+    """
+    LOCAL_COLLECTION = {}
+    LOCAL_COLLECTION["GWB"] = DOCUMENT_INDEX["GWB"]
+    LOCAL_COLLECTION["SVFV"] = DOCUMENT_INDEX["SVFV"]
+    
+    obj_test = DocumentCollection(LOCAL_COLLECTION)
     ret_coll = obj_test.simple_search("search")
     for indx in ret_coll:
         doc_info = obj_test.extract_doc(indx)

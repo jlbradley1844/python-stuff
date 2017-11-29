@@ -75,16 +75,20 @@ class DocUtility(object):
             paragraph = self.doc[begin:end]
 
         if paragraph == self._get_sentence(doc[token_ref[0]:token_ref[1]].sent):
-            throw DegenerateSelection
+            raise DegenerateSelection
             
         return paragraph
     
 
-    def _get_segment(self, token_ref, range_num):
+    def _get_segment(self, token_ref, range_num=None):
         """
-        Gets a segment of paragraphs around token_ref. Range is number
-        of paragraphs before and after that must be included in the lookup
-        """                                           
+        Gets a segment of paragraphs around token_ref. range_num is number
+        of paragraphs before and after that must be included in the lookup; default
+        is a single paragraph before and after
+        """
+        if range_num is None:
+            range_num = DocUtility.BASE_SEGMENT_DEF
+            
         begin_reference = index.lookup(token_ref[0])
         end_reference = index.lookup(token_ref[1])
         start_par = begin_reference["paragraph"]
@@ -101,7 +105,7 @@ class DocUtility(object):
             next_end_par = end_par + range_num
 
         if prior_start_par == next_end_par:
-            throw DegenerateSelection
+            raise DegenerateSelection
             
         # look up token offsets for current paragraph
         (begin, end) = self._get_paragraph_range(prior_start_par, next_end_par)
@@ -110,10 +114,15 @@ class DocUtility(object):
         else:
             segment = doc[begin:end]
 
-        if len(segment) <= len(self._get_segment(token_ref, BASE_SEGMENT_DEF))
-            throw DegenerateSelection
+        if len(segment) <= len(self._get_segment(token_ref, DocUtility.BASE_SEGMENT_DEF)):
+            raise DegenerateSelection
                                                        
-        return segment        
+        return segment
+
+
+    def _get_segment_exp(self, token_ref):
+        """bound shortcut for use in lambda. 3 paragraphs before and after"""
+        return _get_segment(token_ref, DocUtility.EXP_SEGMENT_DEF)
         
 
     def _get_section(self, token_ref):
@@ -128,8 +137,8 @@ class DocUtility(object):
         else:
             section = self.doc[begin:end]
 
-        if len(section) <= len(self._get_segment(token_ref, EXP_SEGMENT_DEF))
-            throw DegenerateSelection
+        if len(section) <= len(self._get_segment(token_ref, DocUtility.EXP_SEGMENT_DEF)):
+            raise DegenerateSelection
             
         return section
 
@@ -147,11 +156,11 @@ class DocUtility(object):
         with highlighting of the mached values.
 x>        """
         scope_lambdas = {
-            SENTENCE: self._get_sentence,
-            PARAGRAPH: self._get_paragraph,
-            SEGMENT: self._get_segment(range_num=1),
-            EXP_SEGMENT: self._get_segment(range_num=3),
-            SECTION: self._get_section
+            DocUtility.SENTENCE: self._get_sentence,
+            DocUtility.PARAGRAPH: self._get_paragraph,
+            DocUtility.SEGMENT: self._get_segment,
+            DocUtility.EXP_SEGMENT: self._get_segment_exp,
+            DocUtility.SECTION: self._get_section
         }
 
         return scope_lambdas[scope](token_ref)
@@ -171,15 +180,15 @@ x>        """
         with highlighting of the mached values.
         [1] the scope of the selection
         """
-        next_scope: {
-            SENTENCE: PARAGRAPH,
-            PARAGRAPH: SEGMENT,
-            SEGMENT: EXP_SEGMENT,
-            EXP_SEGMENT: SECTION
+        next_scope = {
+            DocUtility.SENTENCE: DocUtility.PARAGRAPH,
+            DocUtility.PARAGRAPH: DocUtility.SEGMENT,
+            DocUtility.SEGMENT: DocUtility.EXP_SEGMENT,
+            DocUtility.EXP_SEGMENT: DocUtility.SECTION
         }
 
         try:
-            if scope != SECTION:
+            if scope != DocUtility.SECTION:
                 text = self.get_scoped_selection(token, next_scope[scope])
                 return (text, next_scope[scope])
 
@@ -189,11 +198,11 @@ x>        """
         # if reached here, you will have one of two options - either call at
         # next level or bail with exception
         if not ignore_length_warning:
-            throw DegenerateSelection
+            raise DegenerateSelection
 
-        if scope == SECTION:
+        if scope == DocUtility.SECTION:
             # just return the whole darn thing
             text = self.doc[:]
-            return (text, DOCUMENT)
+            return (text, DocUtility.DOCUMENT)
         else:
             return self.get_next_scoped_selection(token_ref, next_scope[scope], True)

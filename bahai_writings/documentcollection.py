@@ -21,16 +21,19 @@ class DocumentCollection:
     DOC_FOLDER = "texts/"
     nlp = None    # alloted for NLP engine
 
-    def __init__(self):
+    def __init__(self, document_index = DOCUMENT_INDEX):
         """
-        Initializes engine; reads and indexes everything.
+        Initializes engine; reads and indexes everything. In practice, the
+        docmetadata.DOCUMENT_INDEX will be used, which will contain all of
+        the documents analyzed.
         """
         self.nlp = spacy.load('en')    # use English
+        self.document_index = document_index
 
-        for doc_obj in DOCUMENT_INDEX:            
+        for doc_obj in self.document_index:            
             # read in the text file you wish to analyze
             with open(DocumentCollection.DOC_FOLDER +
-                      DOCUMENT_INDEX[doc_obj]["file"], 'r') as next_file:
+                      self.document_index[doc_obj]["file"], 'r') as next_file:
                 text = next_file.read()
                 utext = unicode(text.decode('utf8'))   # important!!
 
@@ -43,8 +46,8 @@ class DocumentCollection:
                 self.nlp.parser(doc)
                 self.nlp.entity(doc)
 
-                DOCUMENT_INDEX[doc_obj]["index"] = doc_index
-                DOCUMENT_INDEX[doc_obj]["nlpdoc"] = doc
+                self.document_index[doc_obj]["index"] = doc_index
+                self.document_index[doc_obj]["nlpdoc"] = doc
 
 
     def extract_doc(self, doc_tag):
@@ -52,7 +55,7 @@ class DocumentCollection:
         given the document tag, extract the document and all the metadata
         :param doc_index - document abbreviation
         """
-        return DOCUMENT_INDEX[doc_tag]
+        return self.document_index[doc_tag]
 
 
     def simple_search(self, match, doc_list=None):
@@ -71,7 +74,7 @@ class DocumentCollection:
         of (matchid, ?, start, end)
         """
         if doc_list is None:
-            doc_list = DOCUMENT_INDEX.keys()
+            doc_list = self.document_index.keys()
         
         simple_matcher = spacy.matcher.Matcher(self.nlp.vocab)
         if type(match) == str:
@@ -81,6 +84,6 @@ class DocumentCollection:
         simple_matcher.add_pattern("test", pattern)
         matches = {}
         for doc_tag in doc_list:
-            matches[doc_tag] = simple_matcher(DOCUMENT_INDEX[doc_tag]["nlpdoc"])
+            matches[doc_tag] = simple_matcher(self.document_index[doc_tag]["nlpdoc"])
 
         return matches
