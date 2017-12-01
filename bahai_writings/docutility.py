@@ -30,67 +30,66 @@ class DocUtility(object):
     EXP_SEGMENT_DEF = 3    # expanded segment size of 7 paragraphs: # elements in [-3:3]
 
 
-    def __init__(self, doc, index):
+    def __init__(self, index, raw_string):
         """
-        :param docu - spacy document
         :param index - DocumentIndex object describing doc
+        :param raw_string - original unicode string representation of spacy document
         """
-        self.doc = doc
         self.index = index
+        self.raw_string = raw_string
 
 
-    def _get_sentence(self, token_ref):
+    def _get_sentence(self, span):
         """
         Get the sentence a given token reference offset is in
-        :param token_ref - numerical offset of token in document
-        :returns the sentence of text cotaining the token_ref at the offset
+        :param span - span containing found token
+        :returns the sentence of text cotaining the span at the offset
         """
-        return str(self.doc[token_ref[0]:token_ref[1]].sent)
+        return unicode(span.sent)
 
 
     def _get_paragraph_range(self, start_para, end_para = None):
         """
-        Get the token offset range bounding one or more paragraphs in a range from the document
+        Get the character offset range bounding one or more paragraphs in a range from the document
         :param start_para - Starting paragraph number to retrieve
         :param end_para - ending paragraph number.
-        :returns tuple for (begin, end) token offsets. If end=None, then this means
+        :returns tuple for (begin, end) character offsets. If end=None, then this means
         all text from begin and beyond should be fetched.
         """
-        begin = index.get_paragraph_span(start_para)[0]
-        end = index.get_paragraph_span(end_para)[1]
+        begin = self.index.get_paragraph_span(start_para)[0]
+        end = self.index.get_paragraph_span(end_para)[1]
         return (begin, end)
         
         
-        
-    def _get_paragraph(self, token_ref):
-        begin_reference = self.index.lookup(token_ref[0])
-        end_reference = self.index.lookup(token_ref[1])
+    def _get_paragraph(self, span):
+        begin_reference = self.index.lookup(span.start_char)
+        end_reference = self.index.lookup(span.end_char)
         start_par = begin_reference["paragraph"]
         end_par = end_reference["paragraph"]
-        # look up token offsets for current paragraph
+        # look up character offsets for current paragraph
         (begin, end) = self._get_paragraph_range(start_par, end_par)
         if end is None:
-            paragraph = self.doc[begin:]
+            paragraph = self.raw_string[begin:]
         else:
-            paragraph = self.doc[begin:end]
+            paragraph = self.raw_string[begin:end]
 
-        if paragraph == self._get_sentence(doc[token_ref[0]:token_ref[1]].sent):
+        if len(paragraph) <= len(unicode(span.sent)):
             raise DegenerateSelection
             
         return paragraph
     
 
-    def _get_segment(self, token_ref, range_num=None):
+    def _get_segment(self, span, range_num=None):
         """
-        Gets a segment of paragraphs around token_ref. range_num is number
+        Gets a segment of paragraphs around span. range_num is number
         of paragraphs before and after that must be included in the lookup; default
         is a single paragraph before and after
         """
         if range_num is None:
             range_num = DocUtility.BASE_SEGMENT_DEF
             
-        begin_reference = index.lookup(token_ref[0])
-        end_reference = index.lookup(token_ref[1])
+        begin_reference = self.index.lookup(span.start_char)
+        end_reference = self.index.lookup(span.end_char)
         start_par = begin_reference["paragraph"]
         end_par = end_reference["paragraph"]
 
@@ -98,7 +97,7 @@ class DocUtility(object):
             prior_start_par = 1
         else:
             prior_start_par = start_par - range_num
-        final_par = index.get_number_of_paragraphs()
+        final_par = self.index.get_number_of_paragraphs()
         if end_par >= final_par + 1 - range_num:
             next_end_par = final_par
         else:
@@ -107,48 +106,48 @@ class DocUtility(object):
         if prior_start_par == next_end_par:
             raise DegenerateSelection
             
-        # look up token offsets for current paragraph
+        # look up character offsets for current paragraph
         (begin, end) = self._get_paragraph_range(prior_start_par, next_end_par)
         if end is None:
-            segment = doc[begin:]
+            segment = self.raw_string[begin:]
         else:
-            segment = doc[begin:end]
+            segment = self.raw_string[begin:end]
 
-        if len(segment) <= len(self._get_segment(token_ref, DocUtility.BASE_SEGMENT_DEF)):
+        if (range_num > DocUtilit.BASE_SEGMENT_DEF and
+        len(segment) <= len(self._get_segment(span, DocUtility.BASE_SEGMENT_DEF))):
             raise DegenerateSelection
                                                        
         return segment
 
 
-    def _get_segment_exp(self, token_ref):
+    def _get_segment_exp(self, span):
         """bound shortcut for use in lambda. 3 paragraphs before and after"""
-        return _get_segment(token_ref, DocUtility.EXP_SEGMENT_DEF)
+        return _get_segment(span, DocUtility.EXP_SEGMENT_DEF)
         
 
-    def _get_section(self, token_ref):
-        begin_reference = self.index.lookup(token_ref[0])
-        end_reference = self.index.lookup(token_ref[1])
+    def _get_section(self, span):
+        begin_reference = self.index.lookup(span.begin_char)
+        end_reference = self.index.lookup(span.end_char)
         start_seq = begin_reference["section_seq"]
         end_seq = end_reference["section_seq"]
-        # look up token offsets for current paragraph
+        # look up character offsets for current paragraph
         (begin, end) = self._get_paragraph_range(start_seq, end_seq)
         if end is None:
-            section = self.doc[begin:]
+            section = self.raw_string[begin:]
         else:
-            section = self.doc[begin:end]
+            section = self.raw_string[begin:end]
 
-        if len(section) <= len(self._get_segment(token_ref, DocUtility.EXP_SEGMENT_DEF)):
+        if len(section) <= len(self._get_segment(span, DocUtility.EXP_SEGMENT_DEF)):
             raise DegenerateSelection
             
         return section
 
         
-    def get_scoped_selection(self, token_ref, scope):
+    def get_scoped_selection(self, span, scope):
         """
-        This gets a selection of text, given a token reference. The bigger
-        the scope, the larger the token reference produced.
-        :param token_ref - (begin, end) tuple of numerical offset of the selection
-        at which the search string was found
+        This gets a selection of text, given a spacy Span object. The bigger
+        the scope, the larger the string around the token
+        :param span - spacy span of the selection at which the search string was found
         :param scope - one of the scope values above. The bigger the scope, the
         larger the selection
         :returns - string with selection. NOTE: presently, there is no highlighting
@@ -163,14 +162,13 @@ x>        """
             DocUtility.SECTION: self._get_section
         }
 
-        return scope_lambdas[scope](token_ref)
+        return scope_lambdas[scope](span)
 
 
-    def get_next_scoped_selection(self, token_ref, scope, ignore_length_warning):
+    def get_next_scoped_selection(self, span, scope, ignore_length_warning=False):
         """
         This gets the next-higher selection of text, given the current scope.
-        :param token_ref - (begin, end) tuple of numerical offset of the selection
-        at which the search string was found
+        :param span - spacy span of the selection at which the search string was found
         :param scope - one of the scope values above. The bigger the scope, the
         larger the selection
         :param ignore_length_warning
@@ -189,7 +187,7 @@ x>        """
 
         try:
             if scope != DocUtility.SECTION:
-                text = self.get_scoped_selection(token, next_scope[scope])
+                text = self.get_scoped_selection(span, next_scope[scope])
                 return (text, next_scope[scope])
 
         except:
@@ -202,10 +200,10 @@ x>        """
 
         if scope == DocUtility.SECTION:
             # just return the whole darn thing
-            text = self.doc[:]
+            text = self.raw_string
             return (text, DocUtility.DOCUMENT)
         else:
-            return self.get_next_scoped_selection(token_ref, next_scope[scope], True)
+            return self.get_next_scoped_selection(span, next_scope[scope], True)
 
 
     def clean_whitespace(self, str):

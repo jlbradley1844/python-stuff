@@ -46,6 +46,7 @@ class DocumentCollection:
                 self.nlp.parser(doc)
                 self.nlp.entity(doc)
 
+                self.document_index[doc_obj]["raw"] = utext
                 self.document_index[doc_obj]["index"] = doc_index
                 self.document_index[doc_obj]["nlpdoc"] = doc
 

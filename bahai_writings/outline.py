@@ -113,6 +113,9 @@ class DocumentIndex:
     document and initializes the header and paragraph marker locations. It then
     provides a get_index which will return information about paragraph markers
     and header sections for a given offset
+    NOTE: offsets returned by the DocumentIndex are CHARACTER-BASED. That is different
+    than the offsets from extracting spacy's Span object, which are TOKEN-BASED. As
+    such, it is only useful for finding offsets in the original string object itself.
     """
 
     header_offsets = []
@@ -132,7 +135,7 @@ class DocumentIndex:
     def lookup(self, offset):
         """
         returns information on the location at which a location is
-        :param offset - integer offset of a token about which we want the location
+        :param offset - character offset about which we want the location
         information.
         :returns a dictionary with three fields
         "section" - reference to the current section header (a string)
@@ -150,7 +153,7 @@ class DocumentIndex:
 
     def get_paragraph_span(self, para_num):
         """
-        returns the token offsets associated with a given paragraph
+        returns the character offsets associated with a given paragraph
         in a (begin,end) tuple. if this is the last paragraph, None is
         returned for end, indicating that we will take the span through the end.
         """
@@ -171,7 +174,7 @@ class DocumentIndex:
     
     def get_section_span(self, section_seq):
         """
-        return the token offsets associated with a given section in
+        return the character offsets associated with a given section in
         a begin, end tuple. If this is the last section, None is returned
         for end, indicating one should take the span through the end.
         """

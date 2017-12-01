@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import outline
 import pytest
+import pdb
 
 def test_headerdetect():
     with open('texts/gleanings.txt', 'r') as myfile:
