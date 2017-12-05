@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from documentcollection import DocumentCollection
 from docmetadata import DOCUMENT_INDEX
-from docutility import DocUtility
+from docutility import DocUtility, DegenerateSelection
 from outline import DocumentIndex
 import pytest
 
@@ -42,3 +42,46 @@ def test_doc_extract():
          "seeth all created things wandering distracted in search "
          "of the Friend. How many a Jacob will he see, hunting after")[0:99])
 
+    #continue
+    next_selection = doc_utility.get_next_scoped_selection(doc[1230:1233],
+                                                           DocUtility.PARAGRAPH)
+    assert next_selection[1] == DocUtility.SEGMENT
+    assert doc_utility.clean_whitespace(next_selection[0])[0:99] == (
+        u"It is incumbent on these servants that they cleanse the heart\u2014which "
+        "is the wellspring of divine tre")
+    assert len(next_selection[0]) == 1312
+    
+    #continue
+    next_selection = doc_utility.get_next_scoped_selection(doc[1230:1233],
+                                                           DocUtility.SEGMENT)
+    assert next_selection[1] == DocUtility.EXP_SEGMENT
+    assert doc_utility.clean_whitespace(next_selection[0])[0:99] == (
+        u"The Valley of Search The steed of this Valley is patience; without "
+        "patience the wayfarer on this jo")
+    assert len(next_selection[0]) == 2663
+    assert next_selection[1] == DocUtility.EXP_SEGMENT
+
+    threw_execept = False
+    try:
+        next_selection = doc_utility.get_next_scoped_selection(doc[1230:1233],
+                                                           DocUtility.EXP_SEGMENT)
+    except DegenerateSelection:
+        threw_except = True
+    assert threw_except
+
+    # heading on SVFV doesn't really apply, so you get degenerate selection anyways
+    threw_execept = False
+    try:
+        next_selection = doc_utility.get_next_scoped_selection(doc[1230:1233],
+                                                               DocUtility.EXP_SEGMENT, True)
+    except DegenerateSelection:
+        threw_except = True
+    assert threw_except   # no section, so it did throw
+    # the whole freakin' valley of search
+    assert doc_utility.clean_whitespace(next_selection[0])[0:99] == (
+        u"THE SEVEN VALLEYS OF BAH\xc1\u2019U\u2019LL\xc1H _In the Name of God, "
+        "the Clement, the Merciful._ Praise be to God ")
+    assert len(next_selection[0]) == 63978
+    assert next_selection[1] == DocUtility.DOCUMENT
+        
+        

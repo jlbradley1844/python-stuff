@@ -105,6 +105,11 @@ class DocUtility(object):
 
         if prior_start_par == next_end_par:
             raise DegenerateSelection
+
+        if (range_num > 1 and
+            prior_start_par == start_par - DocUtility.BASE_SEGMENT_DEF and
+            next_end_par == start_par + DocUtility.BASE_SEGMENT_DEV):
+            raise DegenerateSelection
             
         # look up character offsets for current paragraph
         (begin, end) = self._get_paragraph_range(prior_start_par, next_end_par)
@@ -113,20 +118,16 @@ class DocUtility(object):
         else:
             segment = self.raw_string[begin:end]
 
-        if (range_num > DocUtilit.BASE_SEGMENT_DEF and
-        len(segment) <= len(self._get_segment(span, DocUtility.BASE_SEGMENT_DEF))):
-            raise DegenerateSelection
-                                                       
         return segment
 
 
     def _get_segment_exp(self, span):
         """bound shortcut for use in lambda. 3 paragraphs before and after"""
-        return _get_segment(span, DocUtility.EXP_SEGMENT_DEF)
+        return self._get_segment(span, DocUtility.EXP_SEGMENT_DEF)
         
 
     def _get_section(self, span):
-        begin_reference = self.index.lookup(span.begin_char)
+        begin_reference = self.index.lookup(span.start_char)
         end_reference = self.index.lookup(span.end_char)
         start_seq = begin_reference["section_seq"]
         end_seq = end_reference["section_seq"]
