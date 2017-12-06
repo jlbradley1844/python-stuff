@@ -2,7 +2,7 @@ from docmetadata import DOCUMENT_INDEX, CATEGORIES
 from documentcollection import DocumentCollection
 from docutility import DocUtility
 
-class DocumentEngine:
+class DocumentEngine(object):
     """
     The "engine" in the search framework. This is a management object
     that is used to dispatch searches and retrieve document information
@@ -10,15 +10,15 @@ class DocumentEngine:
     """
 
     
-    def __init__():
+    def __init__(self):
         """
         sets up the management objects
         """
-        self.doc_collection = DocumentCollection()
+        self.doc_collection = DocumentCollection(DOCUMENT_INDEX)
         self.session_track = {}
 
 
-    def get_categories():
+    def get_categories(self):
         """
         Returns the category metadata array
         """
@@ -41,7 +41,7 @@ class DocumentEngine:
                 "tag": key,
                 "category": category
             } for key in DOCUMENT_INDEX
-                where DOCUMENT_INDEX[key]["category"] = category]
+                if DOCUMENT_INDEX[key]["category"] == category]
                         
         return tag_coll
 
@@ -74,15 +74,15 @@ class DocumentEngine:
         match_token = tokens[0]
         if category is not None and document_tags is None:
             document_tags = [key for key in DOCUMENT_INDEX
-                             where DOCUMENT_INDEX[key]["category"] == category]
+                             if DOCUMENT_INDEX[key]["category"] == category]
 
-        raw_results = doc_collection.simple_search(match_token, document_tags)
+        raw_results = self.doc_collection.simple_search(match_token, document_tags)
         results = []
         
         # return array of text references, consisting of tag, sentence and scope
         for doc_tag in raw_results:
-            doc = self.doc_collection.extract_doc[doc_tag]["nlpdoc"]
-            index = self.doc_collection.extract_doc[doc_tag]["index"]
+            doc = self.doc_collection.extract_doc(doc_tag)["nlpdoc"]
+            index = self.doc_collection.extract_doc(doc_tag)["index"]
             for ref in raw_results[doc_tag]:
                 found_ref = {}
                 found_ref["tag"] = doc_tag
@@ -99,7 +99,7 @@ class DocumentEngine:
         return results
 
 
-    def expand_selection(self, tag, token_ref, current_scope, is_override=False):
+    def expand_selection(self, tag, token_ref, current_scope="sent", is_override=False):
         """
         Given a document tag and a reference into it, get the text associated
         with the next-bigger scope and returns the next bigger scope.
@@ -123,8 +123,8 @@ class DocumentEngine:
         "selection" - text of new selection
         "scope" - scope of new selection passed back
         """
-        doc = self.doc_collection.extract_doc[tag]["nlpdoc"]
-        index = self.doc_collection.extract_doc[tag]["index"]
+        doc = self.doc_collection.extract_doc(tag)["nlpdoc"]
+        index = self.doc_collection.extract_doc(tag)["index"]
         doc_selector = DocUtility(doc, index)
         (text, scope) = doc_selector.get_next_scoped_selection(token_ref,
                                                                current_scope, is_override)
