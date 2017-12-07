@@ -30,17 +30,18 @@ def test_engine_helpers(obj_test):
                     {'category': "Baha'u'llah", 'tag': 'SVFV'},
                     {'category': "Baha'u'llah", 'tag': 'PM'}]
 
-    foo3 = obj_test.get_meatadata("PM")
+    foo3 = obj_test.get_metadata("PM")
 
 
 def test_engine_search(obj_test):
     """ General test of simple search function """
-    pdb.set_trace()
     foo4 = obj_test.simple_search(["find"], ["KI"])
+    assert len(foo4) == 14
 
 
 def test_engine_navigation(obj_test):
     """ Test of selection expansion """
-    pdb.set_trace()
     foo5 = obj_test.expand_selection("GWB", 1000)
+    assert len(foo5["selection"]) == 1014
+    assert foo5["scope"] == "para"
     

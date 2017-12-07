@@ -86,13 +86,13 @@ class DocumentEngine(object):
             for ref in raw_results[doc_tag]:
                 found_ref = {}
                 found_ref["tag"] = doc_tag
-                begin = raw_results[ref][2]
-                end = raw_results[ref][3]
+                begin = ref[2]
+                end = ref[3]
                 found_ref["selection"] = str(doc[begin:end].sent)
-                found_ref["scope"] = SCOPE.SENTENCE
+                found_ref["scope"] = "sent"
                 lookup_info = index.lookup(begin)
                 found_ref["section"] = lookup_info["section"]
-                found_ref["para"] = lookup_info["para"]
+                found_ref["para"] = lookup_info["paragraph"]
 
                 results.append(found_ref)
 
@@ -111,7 +111,7 @@ class DocumentEngine(object):
         it is too big. (In practice, this is used to prompt the user whether they
         really want that much document text.)
         :param tag - document tag
-        :param token_ref - numerical index into document
+        :param token_ref - numerical index into document, by token #
         :param current_scope - SCOPE value indicating scope of text selection that has already
         been returned to the client.
         :param is_override - if false, will return error if section is above
@@ -123,10 +123,11 @@ class DocumentEngine(object):
         "selection" - text of new selection
         "scope" - scope of new selection passed back
         """
-        doc = self.doc_collection.extract_doc(tag)["nlpdoc"]
+        txt = self.doc_collection.extract_doc(tag)["raw"]
         index = self.doc_collection.extract_doc(tag)["index"]
-        doc_selector = DocUtility(doc, index)
-        (text, scope) = doc_selector.get_next_scoped_selection(token_ref,
+        doc_selector = DocUtility(index, txt)
+        span = self.doc_collection.extract_doc(tag)["nlpdoc"][token_ref:token_ref+1]
+        (text, scope) = doc_selector.get_next_scoped_selection(span,
                                                                current_scope, is_override)
         return { "tag": tag,
                  "token_ref": token_ref,

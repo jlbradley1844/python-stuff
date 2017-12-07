@@ -73,7 +73,7 @@ class DocUtility(object):
         else:
             paragraph = self.raw_string[begin:end]
 
-        if len(paragraph) <= len(unicode(span.sent)):
+        if len(paragraph) <= len(span.sent):
             raise DegenerateSelection
             
         return paragraph
