@@ -21,13 +21,22 @@ class DocumentCollection:
     DOC_FOLDER = "texts/"
     nlp = None    # alloted for NLP engine
 
-    def __init__(self, document_index = DOCUMENT_INDEX):
+    def __init__(self, document_index = DOCUMENT_INDEX, nlpengine = None):
         """
-        Initializes engine; reads and indexes everything. In practice, the
+        Initializes engine; reads and indexes everything.
+        :param document_index: List of file metadata, as per the object declaration
+        in documetadata.py under documentadata.DOCUMENT_INDEX. In practice, the
         docmetadata.DOCUMENT_INDEX will be used, which will contain all of
         the documents analyzed.
+        :param nlpengine: the spacy nlpengine. Normally this is not passed in
+        because the whole purpose of DocumentCollection is to encapsulate said
+        engine. But this is necessary if you contruct different DocumentCollections
+        (e.g. for test purposes) because of the size of that object.
         """
-        self.nlp = spacy.load('en')    # use English
+        if nlpengine is None:
+            self.nlp = spacy.load('en')    # use English
+        else:
+            self.nlp = nlpengine
         self.document_index = document_index
 
         for doc_obj in self.document_index:            

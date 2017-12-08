@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from globalnlpengine import GLOBAL_NLP_ENGINE
 from documentengine import DocumentEngine
 
 import pytest
@@ -15,7 +16,7 @@ def obj_test():
     about sharing state. Once I start testing that, I will not be able to reuse the
     same document engine between the tests (at least not without planning)
     """
-    return DocumentEngine()
+    return DocumentEngine(GLOBAL_NLP_ENGINE)
 
 
 def test_engine_helpers(obj_test):
@@ -25,10 +26,18 @@ def test_engine_helpers(obj_test):
     
 
     foo2 = obj_test.get_document_tags()
-    assert foo2 == [{'category': "Baha'u'llah", 'tag': 'GWB'},
-                    {'category': "Baha'u'llah", 'tag': 'KI'},
-                    {'category': "Baha'u'llah", 'tag': 'SVFV'},
-                    {'category': "Baha'u'llah", 'tag': 'PM'}]
+    assert foo2 == [
+        {'category': "Baha'u'llah", 'tag': 'ESW'},
+        {'category': "Baha'u'llah", 'tag': 'GDM'},
+        {'category': "Baha'u'llah", 'tag': 'GWB'},
+        {'category': "Baha'u'llah", 'tag': 'HW'},
+        {'category': "Baha'u'llah", 'tag': 'KA'},
+        {'category': "Baha'u'llah", 'tag': 'KI'},
+        {'category': "Baha'u'llah", 'tag': 'PM'},
+        {'category': "Baha'u'llah", 'tag': 'SLH'},
+        {'category': "Baha'u'llah", 'tag': 'SVFV'},
+        {'category': "Baha'u'llah", 'tag': 'TB'}
+    ]
 
     foo3 = obj_test.get_metadata("PM")
 

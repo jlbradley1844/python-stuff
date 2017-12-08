@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from globalnlpengine import GLOBAL_NLP_ENGINE
 from documentcollection import DocumentCollection
 from docmetadata import DOCUMENT_INDEX
 import pytest
@@ -18,7 +19,7 @@ def obj_test():
     LOCAL_COLLECTION["GWB"] = DOCUMENT_INDEX["GWB"]
     LOCAL_COLLECTION["SVFV"] = DOCUMENT_INDEX["SVFV"]
     
-    return DocumentCollection(LOCAL_COLLECTION)
+    return DocumentCollection(LOCAL_COLLECTION, GLOBAL_NLP_ENGINE)
     
 
 def test_matching(obj_test):

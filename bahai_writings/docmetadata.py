@@ -34,12 +34,41 @@ CATEGORIES = [
 
     
 DOCUMENT_INDEX = {
-    "SVFV": {
+    # Category: Baha'u'llah
+    "ESW": {
         "category": "Baha'u'llah",
-        "file": "seven-valleys-four-valleys.txt",
-        "full_name": "Seven Valleys and the Four Valleys",
+        "file": "epistle-son-wolf.txt",
+        "full_name": "Epistle to the Son of the Wolf",
         "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
                      " downloaded October 26, 2017")
+    },
+    "GDM": {
+        "category": "Baha'u'llah",
+        "file": "gems-of-divine-mysteries.txt",
+        "full_name": "Gems of Divine Mysteries",
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
+                     " downloaded October 26, 2017")
+    },
+    "GWB": {
+        "category": "Baha'u'llah",
+        "file": "gleanings.txt",
+        "full_name": "Gleanings from the Writings of Bahá’u’lláh",
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
+                     " downloaded October 10, 2017")
+    },
+    "HW": {
+        "category": "Baha'u'llah",
+        "file": "hidden-words.txt",
+        "full_name": "The Hidden Words of Bahá’u’lláh",
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
+                     " downloaded October 10, 2017")
+    },
+    "KA": {
+        "category": "Baha'u'llah",
+        "file": "kitab-i-aqdas.txt",
+        "full_name": "The Kitáb-i-Aqdas",
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
+                     " downloaded October 10, 2017")
     },
     "KI": {
         "category": "Baha'u'llah",
@@ -51,15 +80,31 @@ DOCUMENT_INDEX = {
     "PM": {
         "category": "Baha'u'llah",
         "file": "prayers-and-meditations.txt",
-        "full_name": "Prayers and Meditatons",
+        "full_name": "Prayers and Meditations",
         "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
                      " downloaded October 26, 2017")
     },
-    "GWB": {
+    "SLH": {
         "category": "Baha'u'llah",
-        "file": "gleanings.txt",
-        "full_name": "Gleanings from the Writings of Bahá’u’lláh",
+        "file": "summons-of-lord.txt",
+        "full_name": "Summons of the Lord of Hosts",
         "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
-                     " downloaded October 10, 2017")
+                     " downloaded October 26, 2017")
+    },
+    "SVFV": {
+        "category": "Baha'u'llah",
+        "file": "seven-valleys-four-valleys.txt",
+        "full_name": "Seven Valleys and the Four Valleys",
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
+                     " downloaded October 26, 2017")
+    },
+    "TB": {
+        "category": "Baha'u'llah",
+        "file": "tablets-of-bahaullah.txt",
+        "full_name":  "Tablets of  Bahá’u’lláhRe vealed after the Kitáb-i-Aqdas",
+        "pub_info": ("https://www.gutenberg.org/wiki/Bah%C3%A1%27%C3%AD_Faith_%28Bookshelf%29",
+                     " downloaded October 26, 2017")
     }
+    # category: Abdu'l-Baha
+
 }

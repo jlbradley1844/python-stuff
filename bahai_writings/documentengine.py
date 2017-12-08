@@ -10,11 +10,14 @@ class DocumentEngine(object):
     """
 
     
-    def __init__(self):
+    def __init__(self, nlp_engine = None):
         """
-        sets up the management objects
+        sets up the document management objects.
+        :param nlp_engine: if passed in, passes this instance of the NLP document
+        engine to doc_collection upon creation. This is used so that multiple
+        DocumentCollection objects can share the same large NLP object.
         """
-        self.doc_collection = DocumentCollection(DOCUMENT_INDEX)
+        self.doc_collection = DocumentCollection(DOCUMENT_INDEX, nlp_engine)
         self.session_track = {}
 
 
