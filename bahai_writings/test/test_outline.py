@@ -4,57 +4,54 @@ import pytest
 import pdb
 
 def test_headerdetect():
-    with open('texts/gleanings.txt', 'r') as myfile:
+    with open('texts/gleanings.txt', 'r', encoding='utf8') as myfile:
         text=myfile.read()
-    utext=unicode(text.decode('utf8'))
 
-    out = outline.get_headers(utext[0:30000])
-    assert out == [(0, 49), (3061, 3116), (3375, 3430),  (4948, 5004),
-                   (5996, 6048),  (9514, 9568),  (11166, 11224),  (12497, 12552),
-                   (12966, 13020),  (14147, 14199),  (16012, 16069),
-                   (20387, 20446),  (20651, 20706)]
+    out = outline.get_headers(text[0:30000])
+    assert out == [(0, 48), (3005, 3058), (3307, 3360), (4850, 4904),
+        (5875, 5925), (9330, 9382), (10949, 11005), (12252, 12305),
+	(12707, 12759), (13864, 13914), (15695, 15750), (19997, 20054),
+	(20250, 20303)]
 
-    out = outline.get_headers(utext)
+    out = outline.get_headers(text)
     assert len(out) == 166
 
-    nxt = outline.get_headers(utext[:100000])
+    nxt = outline.get_headers(text[:100000])
     out2 = outline.consolidate_headers(nxt)
-    assert out2 == [0, 3061,  3375,  4948,  5996,  9514,  11166,  12497,  12966,
-                    14147,  16012,  20387,  20651,  36036,  47387,  52036,  54005,
-                    58312,  63312,  66824,  67713,  68870,  77692,  81924,  82811,
-                    83403,  89702,  95903,  97990]
+    assert out2 == [0, 3005, 3307, 4850, 5875, 9330, 10949, 12252,
+        12707, 13864, 15695, 19997, 20250, 35402, 46565, 51136, 53067,
+	57299, 62211, 65661, 66530, 67664, 76344, 80506, 81373, 81950,
+	88151, 94252, 96301]
     
     
 def test_paragraphdetect():
-    with open('texts/gleanings.txt', 'r') as myfile:
+    with open('texts/gleanings.txt', 'r', encoding='utf8') as myfile:
         text=myfile.read()
-    utext=unicode(text.decode('utf8'))
 
-    out = outline.get_paragraph_markers(utext[0:10000])
-    assert out == [(47, 53),  (356, 360),  (1100, 1104),  (1836, 1840),  (2328, 2332),
-                   (2751, 2755),  (3051, 3063),  (3114, 3120),  (3365, 3377),
-                   (3428, 3434),  (3924, 3928),  (4938, 4950),  (5002, 5008),
-                   (5696, 5700),  (5986, 5998),  (6046, 6052),  (6472, 6476),
-                   (7635, 7639),  (8033, 8037),  (8365, 8369),  (8835, 8839),
-                   (9504, 9516),  (9566, 9572)]
+    out = outline.get_paragraph_markers(text[0:10000])
+    assert out == [(47, 50), (349, 351), (1081, 1083), (1806, 1808),
+        (2290, 2292), (2706, 2708), (3000, 3006), (3057, 3060),
+	(3302, 3308), (3359, 3362), (3846, 3848), (4845, 4851),
+	(4903, 4906), (5585, 5587), (5870, 5876), (5924, 5927),
+	(6342, 6344), (7488, 7490), (7879, 7881), (8205, 8207),
+	(8667, 8669), (9325, 9331), (9381, 9384), (9845, 9847)]
 
     
 def test_paraindex():
-    with open('texts/gleanings.txt', 'r') as myfile:
+    with open('texts/gleanings.txt', 'r', encoding='utf8') as myfile:
         text=myfile.read()
-    utext=unicode(text.decode('utf8'))
 
-    hspans = outline.get_headers(utext[:10000])
+    hspans = outline.get_headers(text[:10000])
     hout = outline.consolidate_headers(hspans)
-    pspans = outline.get_paragraph_markers(utext[:10000])
+    pspans = outline.get_paragraph_markers(text[:10000])
     pout = outline.consolidate_paragraphs(pspans, hspans)
-    assert pout == [0, 356, 1100, 1836, 2328, 2751, 3051, 3365, 3924, 4938, 5696, 5986,
-                   6472, 7635, 8033, 8365, 8835, 9504]
+    assert pout == [0, 349, 1081, 1806, 2290, 2706, 3000, 3302, 3846,
+        4845, 5585, 5870, 6342, 7488, 7879, 8205, 8667, 9325, 9845]
 
 
 def test_lookup():
-    arr = [0, 356, 1100, 1836, 2328, 2751, 3051, 3365, 3924, 4938, 5696, 5986,
-                   6472, 7635, 8033, 8365, 8835, 9504]
+    arr = [0, 349, 1081, 1806, 2290, 2706, 3000, 3302, 3846,
+        4845, 5585, 5870, 6342, 7488, 7879, 8205, 8667, 9325]
     assert len(arr) == 18
     
     assert outline.binary_lookup(0, arr) == 0
@@ -64,11 +61,10 @@ def test_lookup():
 
 
 def test_indexer():
-    with open('texts/gleanings.txt', 'r') as myfile:
+    with open('texts/gleanings.txt', 'r', encoding='utf8') as myfile:
         text=myfile.read()
-    utext=unicode(text.decode('utf8'))
 
-    doc = outline.DocumentIndex(utext)
+    doc = outline.DocumentIndex(text)
     assert doc.lookup(100) == {
         "section": "I: LAUDED AND GLORIFIED ART THOU, O LORD, MY...",
         "paragraph": 1,
@@ -81,12 +77,12 @@ def test_indexer():
         }
     assert doc.lookup(10000) == {
         "section": "VI: BEHOLD, HOW THE DIVERS PEOPLES AND KINDREDS...",
-        "paragraph": 18,
+        "paragraph": 19,
         "section_seq": 6
         }
     assert doc.lookup(100000) == {
         "section": "XXIX: THE PURPOSE OF GOD IN CREATING MAN HATH...",
-        "paragraph": 129,
+        "paragraph": 132,
         "section_seq": 29
         }
     # overflow - point to terminal datum??
@@ -98,31 +94,28 @@ def test_indexer():
 
 
 def test_simple_getters():
-    with open('texts/gleanings.txt', 'r') as myfile:
+    with open('texts/gleanings.txt', 'r', encoding='utf8') as myfile:
         text=myfile.read()
-    utext=unicode(text.decode('utf8'))
-    doc = outline.DocumentIndex(utext)
+    doc = outline.DocumentIndex(text)
 
     assert doc.get_number_of_paragraphs() == 718
     assert doc.get_number_of_sections() == 166
 
 
 def test_para_getter():
-    with open('texts/gleanings.txt', 'r') as myfile:
+    with open('texts/gleanings.txt', 'r', encoding='utf8') as myfile:
         text=myfile.read()
-    utext=unicode(text.decode('utf8'))
-    doc = outline.DocumentIndex(utext)
+    doc = outline.DocumentIndex(text)
 
     span = doc.get_paragraph_span(2)
-    assert span == (356, 1100)
+    assert span == (349, 1081)
 
 
 def test_sect_getter():
-    with open('texts/gleanings.txt', 'r') as myfile:
+    with open('texts/gleanings.txt', 'r', encoding='utf8') as myfile:
         text=myfile.read()
-    utext=unicode(text.decode('utf8'))
-    doc = outline.DocumentIndex(utext)
+    doc = outline.DocumentIndex(text)
 
     span = doc.get_section_span(4)
-    assert span == (4948, 5996)
+    assert span == (4850, 5875)
 

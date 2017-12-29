@@ -34,12 +34,8 @@ def test_matching(obj_test):
         # you can also use
         #doc_info["nlpdoc"][offset1:offset2].sent
         # to print out the sentence in which it is found
-        print doc_info["full_name"]
         for fnd in ret_coll[indx]:
             begin=fnd[2]
             end=fnd[3]
-            print (doc_info["index"].lookup(begin)["section"] + ", paragraph " +
-                   str(doc_info["index"].lookup(begin)["paragraph"]))
-            print doc_info["nlpdoc"][begin:end].sent
             assert doc_info != None
 

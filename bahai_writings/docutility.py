@@ -45,7 +45,7 @@ class DocUtility(object):
         :param span - span containing found token
         :returns the sentence of text cotaining the span at the offset
         """
-        return unicode(span.sent)
+        return span.sent
 
 
     def _get_paragraph_range(self, start_para, end_para = None):

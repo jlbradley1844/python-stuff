@@ -42,20 +42,19 @@ class DocumentCollection:
         for doc_obj in self.document_index:            
             # read in the text file you wish to analyze
             with open(DocumentCollection.DOC_FOLDER +
-                      self.document_index[doc_obj]["file"], 'r') as next_file:
+                      self.document_index[doc_obj]["file"], 'r', encoding='utf8') as next_file:
                 text = next_file.read()
-                utext = unicode(text.decode('utf8'))   # important!!
 
                 # create a documentation index
-                doc_index = outline.DocumentIndex(utext)
+                doc_index = outline.DocumentIndex(text)
 
                 # tokenize and process the document into spacy document
-                doc = self.nlp.tokenizer(utext)
+                doc = self.nlp.tokenizer(text)
                 self.nlp.tagger(doc)
                 self.nlp.parser(doc)
                 self.nlp.entity(doc)
 
-                self.document_index[doc_obj]["raw"] = utext
+                self.document_index[doc_obj]["raw"] = text
                 self.document_index[doc_obj]["index"] = doc_index
                 self.document_index[doc_obj]["nlpdoc"] = doc
 

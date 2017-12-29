@@ -37,7 +37,7 @@ def get_headers(doc_string):
     of where the spans are. It will take the document as a string and return
     an array of tuples with character offsets for the strings.
     """
-    HEADER_REGEX = re.compile("(\r\n|^)[^a-z\r\n]+(\r\n|$)")
+    HEADER_REGEX = re.compile("(\n|^)[^a-z\n]+(\n|$)")
     return sectioner(doc_string, HEADER_REGEX)
 
 
@@ -46,7 +46,7 @@ def get_paragraph_markers(doc_string):
     Gets position of the paragraph breaks. A paragraph is at least two line feeds
     in a row
     """
-    PARAGRAPH_REGEX = re.compile("\r\n(\r\n)+")
+    PARAGRAPH_REGEX = re.compile("\n(\n)+")
     return sectioner(doc_string, PARAGRAPH_REGEX)
 
 
@@ -98,7 +98,7 @@ def binary_lookup(index, offsets):
         return top
     
     while top - bottom > 1:
-        mid = (top + bottom) / 2
+        mid = (top + bottom) // 2
         if index >= offsets[mid]:
             bottom = mid
         else:
